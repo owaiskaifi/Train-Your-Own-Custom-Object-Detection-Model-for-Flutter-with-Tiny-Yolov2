@@ -1,288 +1,339 @@
-## Intro
+This fork is made to create a TFLite of your Custom Object Detection Model compatible with Flutter and TFLite 1.1.2 library.
 
-[![Build Status](https://travis-ci.org/thtrieu/darkflow.svg?branch=master)](https://travis-ci.org/thtrieu/darkflow) [![codecov](https://codecov.io/gh/thtrieu/darkflow/branch/master/graph/badge.svg)](https://codecov.io/gh/thtrieu/darkflow)
 
-Real-time object detection and classification. Paper: [version 1](https://arxiv.org/pdf/1506.02640.pdf), [version 2](https://arxiv.org/pdf/1612.08242.pdf).
+**Table of Contents**
 
-Read more about YOLO (in darknet) and download weight files [here](http://pjreddie.com/darknet/yolo/). In case the weight file cannot be found, I uploaded some of mine [here](https://drive.google.com/drive/folders/0B1tW_VtY7onidEwyQ2FtQVplWEU), which include `yolo-full` and `yolo-tiny` of v1.0, `tiny-yolo-v1.1` of v1.1 and `yolo`, `tiny-yolo-voc` of v2.
+[TOCM]
 
+[TOC]
 
-See demo below or see on [this imgur](http://i.imgur.com/EyZZKAA.gif)
+## REQUIREMENTS
+- Windows 7 or 10 (64bits)
+- Nvidia GPU (GTX 650 or newer) for CUDA Acceleration
 
-<p align="center"> <img src="demo.gif"/> </p>
+REMOVE FROM PATH ANY OTHER STANDALONE PYTHON YOU MAY HAVE
 
-## Dependencies
+At "Environment Variables" > "System" > "Path" > "Edit"
+&ensp;Remove: (e.g)
+&emsp;H:\ProgramData\Python\Python310\Scripts\
+&emsp;H:\ProgramData\Python\Python310\
 
-Python3, tensorflow 1.0, numpy, opencv 3.
+You can add it back when finished.
 
-## Citation
+## INSTALLATION
 
-```
-@article{trieu2018darkflow,
-  title={Darkflow},
-  author={Trieu, Trinh Hoang},
-  journal={GitHub Repository. Available online: https://github. com/thtrieu/darkflow (accessed on 14 February 2019)},
-  year={2018}
-}
-```
+Note: Everything is very version sensitive, so use the exactly version mentioned above.
 
-### Getting started
+### 0- Install Visual Studio 2017 Library
 
-You can choose _one_ of the following three ways to get started with darkflow.
+<code>https://visualstudio.microsoft.com/vs/older-downloads/</code>
 
-1. Just build the Cython extensions in place. NOTE: If installing this way you will have to use `./flow` in the cloned darkflow directory instead of `flow` as darkflow is not installed globally.
-    ```
-    python3 setup.py build_ext --inplace
-    ```
+&emsp;I´m not sure if works with newer versions.
 
-2. Let pip install darkflow globally in dev mode (still globally accessible, but changes to the code immediately take effect)
-    ```
-    pip install -e .
-    ```
+### 1- Install Anaconda 3
 
-3. Install with pip globally
-    ```
-    pip install .
-    ```
+<code>https://www.anaconda.com/products/individual</code>
 
-## Update
+&emsp;The one I´m using is "Anaconda3-2021.11-Windows-x86_64" but newer 
+&emsp;releases should be compatible as long is version 3.
 
-**Android demo on Tensorflow's** [here](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/android/src/org/tensorflow/demo/TensorFlowYoloDetector.java)
+### 2- Add to "Environment Variables" > "System" > "Path" > "New"
 
-**I am looking for help:**
- - `help wanted` labels in issue track
+	[YOUR DIRECTORY]\Anaconda3\Scripts\
+	[YOUR DIRECTORY]\Anaconda3\Library\
+	[YOUR DIRECTORY]\Anaconda3\Library\bin\
+	[YOUR DIRECTORY]\Anaconda3\Library\mingw-w64\bin\
 
-## Parsing the annotations
 
-Skip this if you are not training or fine-tuning anything (you simply want to forward flow a trained net)
+### 3- Uninstall any CUDA you might have
+	
+	The NVIDIA softwares you ALLOW to have:
+	-NVIDIA Control Panel
+	-NVIDIA Driver
+	-NVIDIA Geforce Experience
+	-NVIDIA RTX
+	-NVIDIA RTX Voice
+	-NVIDIA PhysX
+	-NVIDIA USB C
+	-NVIDIA FrameView SDK
 
-For example, if you want to work with only 3 classes `tvmonitor`, `person`, `pottedplant`; edit `labels.txt` as follows
+	Uninstall the following:
+	-NVIDIA CUDA
+	-NVIDIA Nsight
+	-NVIDIA Tools
+	
+	Reboot the computer
 
-```
-tvmonitor
-person
-pottedplant
-```
 
-And that's it. `darkflow` will take care of the rest. You can also set darkflow to load from a custom labels file with the `--labels` flag (i.e. `--labels myOtherLabelsFile.txt`). This can be helpful when working with multiple models with different sets of output labels. When this flag is not set, darkflow will load from `labels.txt` by default (unless you are using one of the recognized `.cfg` files designed for the COCO or VOC dataset - then the labels file will be ignored and the COCO or VOC labels will be loaded).
+###4- Download CUDA CUDA 10.0
 
-## Design the net
+<code>https://developer.nvidia.com/cuda-10.0-download-archive</code>
 
-Skip this if you are working with one of the original configurations since they are already there. Otherwise, see the following example:
 
-```python
-...
+###5- Install CUDA 10.0 
 
-[convolutional]
-batch_normalize = 1
-size = 3
-stride = 1
-pad = 1
-activation = leaky
+	5.1- Choose "Custom Installation"
+	5.2- Create a shorter path (e.g. C:\CUDA) because the default path will be too long and we will not be able to add it to "Environment Variables Path"
+	5.3- It MUST be in the same directory of Windows (e.g. C:)
 
-[maxpool]
 
-[connected]
-output = 4096
-activation = linear
+###6- Add to "Environment Variables" > "System" > "Path" > "New"
 
-...
-```
+	Usually added automatically:
 
-## Flowing the graph using `flow`
+	[YOUR DIRECTORY]\CUDA\bin (e.g. C:\CUDA\bin )
+	[YOUR DIRECTORY]\CUDA\libnvvp (e.g. C:\CUDA\libnvvp )
 
-```bash
-# Have a look at its options
-flow --h
-```
+	You always need to add it:
 
-First, let's take a closer look at one of a very useful option `--load`
+	[YOUR DIRECTORY]\CUDA\extras\CUPTI\libx64 (e.g. C:\CUDA\extras\CUPTI\libx64 )
 
-```bash
-# 1. Load tiny-yolo.weights
-flow --model cfg/tiny-yolo.cfg --load bin/tiny-yolo.weights
-
-# 2. To completely initialize a model, leave the --load option
-flow --model cfg/yolo-new.cfg
-
-# 3. It is useful to reuse the first identical layers of tiny for `yolo-new`
-flow --model cfg/yolo-new.cfg --load bin/tiny-yolo.weights
-# this will print out which layers are reused, which are initialized
-```
-
-All input images from default folder `sample_img/` are flowed through the net and predictions are put in `sample_img/out/`. We can always specify more parameters for such forward passes, such as detection threshold, batch size, images folder, etc.
-
-```bash
-# Forward all images in sample_img/ using tiny yolo and 100% GPU usage
-flow --imgdir sample_img/ --model cfg/tiny-yolo.cfg --load bin/tiny-yolo.weights --gpu 1.0
-```
-json output can be generated with descriptions of the pixel location of each bounding box and the pixel location. Each prediction is stored in the `sample_img/out` folder by default. An example json array is shown below.
-```bash
-# Forward all images in sample_img/ using tiny yolo and JSON output.
-flow --imgdir sample_img/ --model cfg/tiny-yolo.cfg --load bin/tiny-yolo.weights --json
-```
-JSON output:
-```json
-[{"label":"person", "confidence": 0.56, "topleft": {"x": 184, "y": 101}, "bottomright": {"x": 274, "y": 382}},
-{"label": "dog", "confidence": 0.32, "topleft": {"x": 71, "y": 263}, "bottomright": {"x": 193, "y": 353}},
-{"label": "horse", "confidence": 0.76, "topleft": {"x": 412, "y": 109}, "bottomright": {"x": 592,"y": 337}}]
-```
- - label: self explanatory
- - confidence: somewhere between 0 and 1 (how confident yolo is about that detection)
- - topleft: pixel coordinate of top left corner of box.
- - bottomright: pixel coordinate of bottom right corner of box.
-
-## Training new model
-
-Training is simple as you only have to add option `--train`. Training set and annotation will be parsed if this is the first time a new configuration is trained. To point to training set and annotations, use option `--dataset` and `--annotation`. A few examples:
-
-```bash
-# Initialize yolo-new from yolo-tiny, then train the net on 100% GPU:
-flow --model cfg/yolo-new.cfg --load bin/tiny-yolo.weights --train --gpu 1.0
-
-# Completely initialize yolo-new and train it with ADAM optimizer
-flow --model cfg/yolo-new.cfg --train --trainer adam
-```
-
-During training, the script will occasionally save intermediate results into Tensorflow checkpoints, stored in `ckpt/`. To resume to any checkpoint before performing training/testing, use `--load [checkpoint_num]` option, if `checkpoint_num < 0`, `darkflow` will load the most recent save by parsing `ckpt/checkpoint`.
 
-```bash
-# Resume the most recent checkpoint for training
-flow --train --model cfg/yolo-new.cfg --load -1
+###6- Download cuDNN v7.6.5 (November 5th, 2019), for CUDA 10.0
 
-# Test with checkpoint at step 1500
-flow --model cfg/yolo-new.cfg --load 1500
+<code>https://developer.nvidia.com/rdp/cudnn-archive</code>
 
-# Fine tuning yolo-tiny from the original one
-flow --train --model cfg/tiny-yolo.cfg --load bin/tiny-yolo.weights
-```
 
-Example of training on Pascal VOC 2007:
-```bash
-# Download the Pascal VOC dataset:
-curl -O https://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
-tar xf VOCtest_06-Nov-2007.tar
+###7- Install cuDNN
 
-# An example of the Pascal VOC annotation format:
-vim VOCdevkit/VOC2007/Annotations/000001.xml
+	7.1- Under the .zip file, move "cuda > bin > *.dll" to your "CUDA > bin" folder
+	7.2- Create a copy and rename "cudnn64_7.dll" to "cudnn64_100.dll"
 
-# Train the net on the Pascal dataset:
-flow --model cfg/yolo-new.cfg --train --dataset "~/VOCdevkit/VOC2007/JPEGImages" --annotation "~/VOCdevkit/VOC2007/Annotations"
-```
+	7.3- Under the .zip file, move "cuda > include > *.h" to your "CUDA > include" folder
 
-### Training on your own dataset
+	7.4- Under the .zip file, move "cuda > lib > x64 > *.lib" to your "CUDA > lib > x64" folder
 
-*The steps below assume we want to use tiny YOLO and our dataset has 3 classes*
+	7.5- REBOOT the computer
 
-1. Create a copy of the configuration file `tiny-yolo-voc.cfg` and rename it according to your preference `tiny-yolo-voc-3c.cfg` (It is crucial that you leave the original `tiny-yolo-voc.cfg` file unchanged, see below for explanation).
+## ENVIRONMENT SETUP
 
-2. In `tiny-yolo-voc-3c.cfg`, change classes in the [region] layer (the last layer) to the number of classes you are going to train for. In our case, classes are set to 3.
-    
-    ```python
-    ...
 
-    [region]
-    anchors = 1.08,1.19,  3.42,4.41,  6.63,11.38,  9.42,5.11,  16.62,10.52
-    bias_match=1
-    classes=3
-    coords=4
-    num=5
-    softmax=1
-    
-    ...
-    ```
+###1- Initiate Anaconda
 
-3. In `tiny-yolo-voc-3c.cfg`, change filters in the [convolutional] layer (the second to last layer) to num * (classes + 5). In our case, num is 5 and classes are 3 so 5 * (3 + 5) = 40 therefore filters are set to 40.
-    
-    ```python
-    ...
+	1.1- Open "cmd" type: conda init
+	1.2- Close and reopen "cmd"
 
-    [convolutional]
-    size=1
-    stride=1
-    pad=1
-    filters=40
-    activation=linear
 
-    [region]
-    anchors = 1.08,1.19,  3.42,4.41,  6.63,11.38,  9.42,5.11,  16.62,10.52
-    
-    ...
-    ```
+###2- Setup Environment
 
-4. Change `labels.txt` to include the label(s) you want to train on (number of labels should be the same as the number of classes you set in `tiny-yolo-voc-3c.cfg` file). In our case, `labels.txt` will contain 3 labels.
+	2.1- Open "cmd" on ADMIN MODE type: conda deactivate
+	2.2- On "cmd" type: conda create \--name tensor_yolo_1.15 python=3.7.0
+	2.3- On "cmd" type: conda activate tensor_yolo_1.15
+	2.6- On "cmd" type: 
+		 pip install tensorflow-gpu==1.15.0
+		 pip install Cython==0.29.26
+		 pip install opencv-python==4.5.4.60
+		 pip3 install \--extra-index-url https://google-coral.github.io/py-repo/ tflite==2.4.0
+		 conda install pyqt=5
+		 conda install -c anaconda lxml=4.6.1
+		 pip install in_place==0.5.0
 
-    ```
-    label1
-    label2
-    label3
-    ```
-5. Reference the `tiny-yolo-voc-3c.cfg` model when you train.
+###3- Setup the Project
 
-    `flow --model cfg/tiny-yolo-voc-3c.cfg --load bin/tiny-yolo-voc.weights --train --annotation train/Annotations --dataset train/Images`
+	 3.1- Download and extract
+<code> https://github.com/IfProgrammingIsMagicImaWizard/darkflow</code>
 
+	 With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO THE PROJECT FOLDER" 	    
+				(e.g     cd /d "D:\Projetos\Flutter\darkflow" )
+		On "cmd" type: python setup.py build_ext \--inplace
 
-* Why should I leave the original `tiny-yolo-voc.cfg` file unchanged?
-    
-    When darkflow sees you are loading `tiny-yolo-voc.weights` it will look for `tiny-yolo-voc.cfg` in your cfg/ folder and compare that configuration file to the new one you have set with `--model cfg/tiny-yolo-voc-3c.cfg`. In this case, every layer will have the same exact number of weights except for the last two, so it will load the weights into all layers up to the last two because they now contain different number of weights.
 
+###4- Setup the labelImg
 
-## Camera/video file demo
+ 	4.1- With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO labelImg" 
+				(e.g     cd /d "D:\Projetos\Flutter\darkflow\labelImg" )
+		On "cmd" type: pyrcc5 -o resources.py resources.qrc
 
-For a demo that entirely runs on the CPU:
+ 	4.2- Move "resources.py" and "resources.qrc" to ´libs´ folder 		(e.g darkflow\labelImg\libs )
 
-```bash
-flow --model cfg/yolo-new.cfg --load bin/yolo-new.weights --demo videofile.avi
-```
+## IMAGE LABELLING
 
-For a demo that runs 100% on the GPU:
+### 1- Data Gathering
 
-```bash
-flow --model cfg/yolo-new.cfg --load bin/yolo-new.weights --demo videofile.avi --gpu 1.0
-```
+Put all your images into `darkflow\train\Images` folder.
 
-To use your webcam/camera, simply replace `videofile.avi` with keyword `camera`.
+Make all images square, .jpg, up to <code>416x416</code> pixels with <code>Photoshop</code> and [iloveimg.com](https://www.iloveimg.com/).
 
-To save a video with predicted bounding box, add `--saveVideo` option.
+Run <code>labelImg.py</code> on <code>darkflow\labelImg</code> folder.
 
-## Using darkflow from another python application
+### 2- Image labelling
 
-Please note that `return_predict(img)` must take an `numpy.ndarray`. Your image must be loaded beforehand and passed to `return_predict(img)`. Passing the file path won't work.
+With labelImg Open:
 
-Result from `return_predict(img)` will be a list of dictionaries representing each detected object's values in the same format as the JSON output listed above.
+- Go to view > Enable Auto Save Mode
+- Set ´Save Dir´ to <code>darkflow\train\Images</code> folder
+- Open Dir (Same Path)
+- Start Labeling
+- Short Cuts:
+- W - Draw Label
+- A - Next Image
+- D - Previous Image
 
-```python
-from darkflow.net.build import TFNet
-import cv2
+### 3- Move .xml files
 
-options = {"model": "cfg/yolo.cfg", "load": "bin/yolo.weights", "threshold": 0.1}
+Move the </code>.xlm</code> files from <code>darkflow\train\Images</code> to <code>darkflow\train\annotation</code>
 
-tfnet = TFNet(options)
+### 4- (Optional) Update Annotation´s path to the Image file
 
-imgcv = cv2.imread("./sample_img/sample_dog.jpg")
-result = tfnet.return_predict(imgcv)
-print(result)
-```
+If you are using images from a database (like RoboFlow or Kaggle) you will notice that, opening the Annotation with text editor like Notepad, the Annotation´s path to the Image file is not correct.
 
+Example:
 
-## Save the built graph to a protobuf file (`.pb`)
+It is this:
+<code><path>\0_ELAADEN_CACHE_FLOW.jpg\</path></code>
+<br>When it should be this:
+<code><path>D:\Flutter\YOLO_V2\darkflow\train\Images\0_ELAADEN_CACHE_FLOW.jpg\</path></code>
+<br>
+To update the Annotation to your liking edit the <code>darkflow\update_annotation.py</code> script and run on <code>tensor_yolo_1.15</code> environment:<br><br><code>conda activate tensor_yolo_1.15</code> and then <code>python PATH_TO_THE_SCRIPT</code>
 
-```bash
-## Saving the lastest checkpoint to protobuf file
-flow --model cfg/yolo-new.cfg --load -1 --savepb
+##  TRAIN YOUR MODEL
 
-## Saving graph and weights to protobuf file
-flow --model cfg/yolo.cfg --load bin/yolo.weights --savepb
-```
-When saving the `.pb` file, a `.meta` file will also be generated alongside it. This `.meta` file is a JSON dump of everything in the `meta` dictionary that contains information nessecary for post-processing such as `anchors` and `labels`. This way, everything you need to make predictions from the graph and do post processing is contained in those two files - no need to have the `.cfg` or any labels file tagging along.
+### 1- Edit <code>labels.txt</code>
 
-The created `.pb` file can be used to migrate the graph to mobile devices (JAVA / C++ / Objective-C++). The name of input tensor and output tensor are respectively `'input'` and `'output'`. For further usage of this protobuf file, please refer to the official documentation of `Tensorflow` on C++ API [_here_](https://www.tensorflow.org/versions/r0.9/api_docs/cc/index.html). To run it on, say, iOS application, simply add the file to Bundle Resources and update the path to this file inside source code.
+Edit <code>darkflow/labels.txt</code> to match with your classes.
 
-Also, darkflow supports loading from a `.pb` and `.meta` file for generating predictions (instead of loading from a `.cfg` and checkpoint or `.weights`).
-```bash
-## Forward images in sample_img for predictions based on protobuf file
-flow --pbLoad built_graph/yolo.pb --metaLoad built_graph/yolo.meta --imgdir sample_img/
-```
-If you'd like to load a `.pb` and `.meta` file when using `return_predict()` you can set the `"pbLoad"` and `"metaLoad"` options in place of the `"model"` and `"load"` options you would normally set.
+### 2- Edit cfg file
 
-That's all.
+On <code>darkflow\cfg</code> create a copy (bacause we will need the original too) <BR>&emsp;of the <code>yolov2-tiny-voc.cfg</code> and rename it <br><br>&emsp;&emsp;&emsp;&emsp;&emsp;(e.g <code>yolov2-tiny-voc-c16.cfg</code> because I have 16 classes )
+<br>
+- Open with a text editor like Atom or Notepad++.
+
+- Go to the bootom and edit the <code>line 124</code> and put the amount of classes you have (e.g classes = 20 )
+
+- Now we need to alter the last layer´s filter to match our amount of classes
+
+- Go to <code>line 118</code> the amount will be the result of this formula:<br> <code>(num classes + 5) * 5 </code>
+
+Examples:
+<br> 1 class -> (1 + 5) \* 5 = 30 -> filters=30
+<br> 20 classes -> (20 + 5) \* 5 = 125 -> filters=125
+
+### 3- (Optional) Choosing another model
+
+In this turorial we are using Tiny YoloV2 Weights and Cfg.
+<br>If you want to use other model download the Weights and Cfg from <code>https://pjreddie.com/darknet/yolo/</code>
+<br>Put the Weight in the <code>darkflow/bin</code> folder and Cfg in the <code>darkflow/cfg</code> folder.
+
+### 4- Train our model
+
+	With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO THIS PROJECT" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow\" )
+		On "cmd" type:
+
+<code>python flow \--model cfg/yolov2-tiny-voc-16.cfg \--load bin/yolov2-tiny-voc.weights \--train \--annotation train/annotation \--dataset train/Images \--gpu 0.8 \--epoch 1000</code>
+<br>
+Explanation:
+
+<br><code>\--model</code> Path to your modifed cfg (it will look for the original too)
+<br><code>\--load</code> Path to the pre trained wights
+<br><code>\-- train</code> Command to train
+<br><code>\--annotation</code> Path to the annotation´s folder
+<br><code>\--dataset</code> Path to the images folder
+<br><code>\--gpu</code> Command to use the GPU, 0.8 means 80%, recommended to be safe since Windows use a bit of the GPU to function
+<br><code>\--epoch</code> Amount of training, default is 5000, but start with 1000 to see if everthing is working
+
+On a Ryzen 3700x and 1660Ti training 1000 epochs took 30 min using GPU or 60 hours using CPU.
+
+### 5- Test our model
+
+With the training finished we should have <code>darkflow\ckpt</code> folder.
+
+#### 5.1 Testing CKPT on Images
+
+Prepare the <code>darkflow\sample_img</code> folder with some images.
+
+	With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO THIS PROJECT" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow\" )
+		On "cmd" type:
+
+<code>python flow \--imgdir sample_img/ \--model cfg/yolov2-tiny-voc-16.cfg \--load 10750 \--gpu 0.8  \--threshold 0.0</code>
+
+<br>Explanation:
+
+<br><code>\--model</code> Path to your modifed cfg
+<br><code>\--load</code> Path to your trained wights
+<br><code>\--imgdir</code> Path to the sample images folder
+<br><code>\--gpu</code> Command to use the GPU, 0.8 means 80%, recommended to be safe since Windows use a bit of the GPU to function
+<br><code>threshold 0.0</code> Set so just confidence above this number will be return, 0.0 return all, up to 1.0 (100%)
+
+You can also get the resuts in Json format by adding <code>\--json</code>
+
+<br></brIn>In the example above we load our ckpt on checkpoint 10750 that is in our ckpt folder:
+
+![](https://i.imgur.com/UbFTVzP.png)
+
+If everthing works right your input image should be transform into an output like this:
+
+![](https://i.imgur.com/g9ZfFlh.png)
+
+#### 5.2 Testing CKPT on Video
+
+You can also test using a video, but in my case it didn´t work, it don´t draw the boxes
+But the command is the above:
+
+<code>python flow \--model cfg\yolov2-tiny-voc-16.cfg \--load 10750 \--demo G:\Download\video.avi \--gpu 0.8 \--saveVideo \--threshold 0.0</code>
+
+If you out of VRAM use CPU:
+
+<code>python flow \--model cfg\yolov2-tiny-voc-16.cfg \--load 10750 \--demo G:\Download\video.avi \--saveVideo \--threshold 0.0</code>
+
+### 6- Convert to .pb
+
+Also known as generate frozen graph or genarate saved model.
+
+	With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO THIS PROJECT" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow\" )
+		On "cmd" type:
+
+<code>python flow \--model cfg/yolov2-tiny-voc-16.cfg \--load 10750 \--savepb</code>
+
+<br>Explanation:
+
+<br><code>\--model</code> Path to your modifed cfg
+<br><code>\--load</code> Path to your trained wights
+<br><code>\--savepb</code> Command to save pb file
+
+#### 6.1 Testing .pb on Images
+
+Similar to testing our CKPT model we can test our .pb:
+
+<code>python flow \--pbLoad built_graph/yolov2-tiny-voc-16.pb \--metaLoad built_graph/yolov2-tiny-voc-16.meta \--imgdir sample_img/</code>
+
+### 7- Convert to TFLite
+
+	With conda activate tensor_yolo_1.15:
+		On "cmd" type: cd /d "PATH TO THIS PROJECT" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow\" )
+		On "cmd" type:
+
+<code>tflite_convert \--graph_def_file="built_graph\\yolov2-tiny-voc-16.pb" \--output_file="G:\\Download\\yolov2_28_12_2021_22_40.tflite"  \--input_format=TENSORFLOW_GRAPHDEF \--output_format=TFLITE \--input_shape=1,416,416,3 \--input_array=input \--output_array=output \--inference_type=FLOAT \--input_data_type=FLOAT</code>
+
+Change just <code>\--graph_def_file</code> and <code>\--output_file</code>
+
+This will generate a model compatible with [Flutter](https://flutter.dev/) and [tflite 1.1.2](https://pub.dev/packages/tflite)
+
+### 8- Using on Flutter
+
+&emsp;Download sample project: https://github.com/IfProgrammingIsMagicImaWizard/sample_object_detection
+
+The result is something like:
+
+	[{"label": "Cat", 
+	"confidence": 0.83, 
+	"topleft": {"x": 11, "y": 90}, 
+	"bottomright": {"x": 66, "y": 179}}, 
+	
+	{"label": "Dog", 
+	"confidence": 0.93, 
+	"topleft": {"x": 191, "y": 274}, 
+	"bottomright": {"x": 246, "y": 351}}, 
+
+	{"label": "Bird", 
+	"confidence": 0.88, 
+	"topleft": {"x": 109, "y": 8}, 
+	"bottomright": {"x": 154, "y": 79}}]
+
+You can use the box information do draw on a Image, Video or Live Feed.
+
+You can know more at: https://pub.dev/packages/tflite/example
