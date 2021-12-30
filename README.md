@@ -59,19 +59,19 @@ Note: Everything is very version sensitive, so use the exactly version mentioned
 	Reboot the computer
 
 
-###4- Download CUDA CUDA 10.0
+### 4- Download CUDA CUDA 10.0
 
 <code>https://developer.nvidia.com/cuda-10.0-download-archive</code>
 
 
-###5- Install CUDA 10.0 
+### 5- Install CUDA 10.0 
 
 	5.1- Choose "Custom Installation"
 	5.2- Create a shorter path (e.g. C:\CUDA) because the default path will be too long and we will not be able to add it to "Environment Variables Path"
 	5.3- It MUST be in the same directory of Windows (e.g. C:)
 
 
-###6- Add to "Environment Variables" > "System" > "Path" > "New"
+### 6- Add to "Environment Variables" > "System" > "Path" > "New"
 
 	Usually added automatically:
 
@@ -83,32 +83,32 @@ Note: Everything is very version sensitive, so use the exactly version mentioned
 	[YOUR DIRECTORY]\CUDA\extras\CUPTI\libx64 (e.g. C:\CUDA\extras\CUPTI\libx64 )
 
 
-###6- Download cuDNN v7.6.5 (November 5th, 2019), for CUDA 10.0
+### 7- Download cuDNN v7.6.5 (November 5th, 2019), for CUDA 10.0
 
 <code>https://developer.nvidia.com/rdp/cudnn-archive</code>
 
 
-###7- Install cuDNN
+### 8- Install cuDNN
 
-	7.1- Under the .zip file, move "cuda > bin > *.dll" to your "CUDA > bin" folder
-	7.2- Create a copy and rename "cudnn64_7.dll" to "cudnn64_100.dll"
+	8.1- Under the .zip file, move "cuda > bin > *.dll" to your "CUDA > bin" folder
+	8.2- Create a copy and rename "cudnn64_7.dll" to "cudnn64_100.dll"
 
-	7.3- Under the .zip file, move "cuda > include > *.h" to your "CUDA > include" folder
+	8.3- Under the .zip file, move "cuda > include > *.h" to your "CUDA > include" folder
 
-	7.4- Under the .zip file, move "cuda > lib > x64 > *.lib" to your "CUDA > lib > x64" folder
+	8.4- Under the .zip file, move "cuda > lib > x64 > *.lib" to your "CUDA > lib > x64" folder
 
-	7.5- REBOOT the computer
+	8.5- REBOOT the computer
 
 ## ENVIRONMENT SETUP
 
 
-###1- Initiate Anaconda
+### 1- Initiate Anaconda
 
 	1.1- Open "cmd" type: conda init
 	1.2- Close and reopen "cmd"
 
 
-###2- Setup Environment
+### 2- Setup Environment
 
 	2.1- Open "cmd" on ADMIN MODE type: conda deactivate
 	2.2- On "cmd" type: conda create \--name tensor_yolo_1.15 python=3.7.0
@@ -122,7 +122,7 @@ Note: Everything is very version sensitive, so use the exactly version mentioned
 		 conda install -c anaconda lxml=4.6.1
 		 pip install in_place==0.5.0
 
-###3- Setup the Project
+### 3- Setup the Project
 
 	 3.1- Download and extract
 <code> https://github.com/IfProgrammingIsMagicImaWizard/darkflow</code>
@@ -133,7 +133,7 @@ Note: Everything is very version sensitive, so use the exactly version mentioned
 		On "cmd" type: python setup.py build_ext \--inplace
 
 
-###4- Setup the labelImg
+### 4- Setup the labelImg
 
  	4.1- With conda activate tensor_yolo_1.15:
 		On "cmd" type: cd /d "PATH TO labelImg" 
