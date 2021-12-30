@@ -316,6 +316,8 @@ Change just <code>\--graph_def_file</code> and <code>\--output_file</code>
 
 This will generate a model compatible with [Flutter](https://flutter.dev/) and [tflite 1.1.2](https://pub.dev/packages/tflite)
 
+Note: There is a significant loss in accuracy when converting to TFlite (I'm case was about 13%) but that is the price for performance.
+
 ### 8- Using on Flutter
 
 &emsp;Download sample project: https://github.com/IfProgrammingIsMagicImaWizard/sample_object_detection
