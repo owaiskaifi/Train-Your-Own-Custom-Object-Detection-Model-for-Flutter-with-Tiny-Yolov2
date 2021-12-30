@@ -340,3 +340,8 @@ The result is something like:
 You can use the box information do draw on a Image, Video or Live Feed.
 
 You can know more at: https://pub.dev/packages/tflite/example
+
+
+## ACKNOWLEDGMENT
+
+Thanks to [Mark Jay](https://www.youtube.com/channel/UC2W0aQEPNpU6XrkFCYifRFQ) of which most of the tutorial was based on.
