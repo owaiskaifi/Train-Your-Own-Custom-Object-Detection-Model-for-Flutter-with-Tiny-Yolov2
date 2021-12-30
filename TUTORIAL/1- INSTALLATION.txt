@@ -120,19 +120,28 @@ Note: Everything is very version sensitive, so use the exactly version mentioned
 
 3- Setup the Project
 
- 3.1- Download and extract "https://github.com/thtrieu/darkflow"
+ 3.1- Download and extract  			https://github.com/IfProgrammingIsMagicImaWizard/darkflow
+
          With conda activate tensor_yolo_1.15:
+
 	On "cmd" type: cd /d "PATH TO THE PROJECT FOLDER" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow" )
 	On "cmd" type: python setup.py build_ext --inplace
+
+ 3.2- Download YOLO V2 Weights https://pjreddie.com/darknet/yolo/
+	Tiny YOLO	COCO trainval	test-dev	23.7	5.41 Bn	244	cfg	weights
+
+ 3.3- Put into darkflow/bin
 
 
 4- Setup the labelImg
 
- 4.1- With conda activate tensor_yolo_1.15:
+ 4.1- Download labelImg and extract into darkflow/labelImg: https://github.com/tzutalin/labelImg
+
+ 4.2- With conda activate tensor_yolo_1.15:
 	On "cmd" type: cd /d "PATH TO labelImg" 	     (e.g     cd /d "D:\Projetos\Flutter\darkflow\labelImg" )
 	On "cmd" type: pyrcc5 -o resources.py resources.qrc
 
- 4.2- Move "resources.py" and "resources.qrc" to 'libs' folder 		(e.g darkflow\labelImg\libs )
+ 4.3- Move "resources.py" and "resources.qrc" to 'libs' folder 		(e.g darkflow\labelImg\libs )
 
 
 
