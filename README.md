@@ -1,4 +1,4 @@
-https://github.com/IfProgrammingIsMagicImaWizard/darkflow/
+https://github.com/IfProgrammingIsMagicImaWizard/Train-Your-Own-Custom-Object-Detection-Model-for-Flutter-with-Tiny-Yolov2
 
 This fork is made to train and create a TFLite of your Custom Object Detection Model compatible with [Flutter](https://flutter.dev/) and [TFLite 1.1.2](https://pub.dev/packages/tflite) library.
 
