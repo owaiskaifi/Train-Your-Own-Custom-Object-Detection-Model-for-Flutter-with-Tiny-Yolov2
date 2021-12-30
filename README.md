@@ -1,12 +1,6 @@
 This fork is made to create a TFLite of your Custom Object Detection Model compatible with Flutter and TFLite 1.1.2 library.
 
 
-**Table of Contents**
-
-[TOCM]
-
-[TOC]
-
 ## REQUIREMENTS
 - Windows 7 or 10 (64bits)
 - Nvidia GPU (GTX 650 or newer) for CUDA Acceleration
