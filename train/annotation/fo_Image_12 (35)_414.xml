@@ -1,0 +1,26 @@
+<annotation>
+	<folder>testing_resized</folder>
+	<filename>fo_Image_12 (35)_414.jpg</filename>
+	<path>C:\Users\owais\Desktop\upwork\current\data sets for annotaions\testing_resized\fo_Image_12 (35)_414.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>278</width>
+		<height>416</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>feet</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>75</xmin>
+			<ymin>19</ymin>
+			<xmax>244</xmax>
+			<ymax>378</ymax>
+		</bndbox>
+	</object>
+</annotation>

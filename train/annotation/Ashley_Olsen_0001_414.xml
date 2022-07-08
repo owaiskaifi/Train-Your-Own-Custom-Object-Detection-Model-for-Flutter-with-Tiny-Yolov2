@@ -1,0 +1,26 @@
+<annotation>
+	<folder>testing_resized</folder>
+	<filename>Ashley_Olsen_0001_414.jpg</filename>
+	<path>C:\Users\owais\Desktop\upwork\data sets for annotaions\testing_resized\Ashley_Olsen_0001_414.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>250</width>
+		<height>250</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>90</xmin>
+			<ymin>43</ymin>
+			<xmax>214</xmax>
+			<ymax>200</ymax>
+		</bndbox>
+	</object>
+</annotation>
